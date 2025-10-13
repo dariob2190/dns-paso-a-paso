@@ -5,7 +5,7 @@
 1. Configuraciones previas
 2. Instalación del servidor
 3. Configuración del servidor
-4. Comprobaciones de las configuraciones, resoluciones y consultas
+4. Comprobaciones de las configuraciones
 5. Comprobación usando _dig_
 6. Comprobación usando _nslookup_
 7. Cuestiones finales
@@ -62,7 +62,11 @@ Vamos a instalar Bind. Para ello vamos a ejecutar un `sudo apt install bind9 bin
 
 Ahora vamos a editar `/etc/default/named`. Yo usaré `nano` que es el editor que más me gusta pero se puede utilizar cualquier otro.
 Para editar el fichero primero necesitamos usar `sudo`para poder modificarlo. Ejecutariamos el comando tal que así `sudo nano /etc/default/named`.
-Una vez dentro en la línea `OPTIONS=...` tenemos que añadir "-4" al final, quedando tal que así `OPTIONS="-u bind -4"`
+Una vez dentro en la línea `OPTIONS=...` tenemos que añadir "-4" al final, quedando tal que así:
+
+```
+OPTIONS="-u bind -4"
+```
 
 ![Captura de la edición del fichero "/etc/default/named"](./capturas/captura11.png)
 
@@ -111,3 +115,100 @@ options {
 ```
 
 ![Captura del nuevo contenido de "/etc/bind/named.conf.options"](./capturas/captura13.png)
+
+Gracias al comando `named-checkconf` podemos comprobar si hay algún error sintáctico. Ejecutamos el comando `sudo named-checkconf /etc/bind/named.conf.options`. Si nos devuelve algo será un error, si no, significa que todo está correcto.
+
+![Captura del comando "named-checkconf"](./capturas/captura14.png)
+
+Vamos a reiniciar el servicio de `named` con `sudo systemctl restart named` y comprobamos el estado con `systemctl status named`.
+
+![Captura del reinicio del servicio named y comprobamos el estado](./capturas/captura15.png)
+
+Vamos a añadir al fichero `named.conf.local` las zonas, la normal y la inversa. Tiene que quedar algo tal que así:
+
+```
+zone "luisdario.test" {
+    type master;
+    file "/var/lib/bind/luisdario.test.dns";
+};
+
+zone "2.168.192.in-addr.arpa" {
+    type master;
+    file "/var/lib/bind/luisdario.test.rev";
+};
+```
+
+![Captura del nuevo contenido de "/etc/bind/named.conf.local"](./capturas/captura16.png)
+
+Ahora vamos a crear los ficheros mencionados en `/etc/bind/named.conf.local`, `/var/lib/bind/luisdario.test.dns` y `/var/lib/bind/luisdario.test.rev`. Empecemos con `/var/lib/bind/luisdario.test.dns`. Ejecutamos `sudo nano /var/lib/bind/luisdario.test.dns` y lo dejaremos tal que así:
+
+```
+;
+; luisdario.test
+;
+$TTL    86400
+@       IN      SOA     debian.luisdario.test.  admin.luisdario.test.   (
+    202510131       ; Serial
+    3600    ; Refresh
+    1800    ; Retry
+    604800  ; Expire
+    86400 ) ; Negative Cache TTL
+
+@       IN      NS      debian.luisdario.test.
+debian.luisdario.test.  IN      A       192.168.2.45
+cliente.luisdario.test. IN      A       192.168.1.45
+```
+
+![Captura del nuevo contenido de "/var/lib/bind/luisdario.test.dns"](./capturas/captura17.png)
+
+Ahora vamos con `/var/lib/bind/luisdario.test.rev`. Ejecutamos `sudo nano /var/lib/bind/luisdario.test.rev` y lo dejamos tal que así:
+
+```
+;
+; Zona inversa para 192.168.2.X
+;
+$TTL 86400
+@       IN      SOA     debian.luisdario.test.  admin.luisdario.test.   (
+    202510131       ; Serial
+    3600    ; Refresh
+    1800    ; Retry
+    604800  ; Expire
+    86400 ) ; Negative Cache TTL
+
+@       IN      NS      debian.luisdario.test.
+45      IN      PTR     debian.luisdario.test.
+```
+
+![Captura del nuevo contenido de "/var/lib/bind/luisdario.test.rev"](./capturas/captura18.png)
+
+## 4. Comprobaciones de las configuraciones
+
+Vamos a comprobar que todos los ficheros esten bien configurados. Usamos `sudo named-checkzone luisdario.test /var/lib/bind/luisdario.test.dns` y `sudo named-checkzone 2.168.192.in-addr.arpa /var/lib/bind/luisdario.test.rev`.
+
+![Captura de las comprobaciones con "named-checkzone"](./capturas/captura19.png)
+
+Ahora solo hacemos un `sudo systemctl restart bind` y nuestro servidor estaría listo.
+
+## 5. Comprobación usando _dig_
+
+Vamos a usar `dig` ahora para comprobar que todo funciona como debería con `dig @192.168.2.45 debian.luisdario.test`.
+
+![Captura de la comprobación con dig](./capturas/captura20.png)
+
+## 6. Comprobación usando _nslookup_
+
+Vamos a usar `nslookup` ahora para comprobar que todo funciona como debería con `nslookup debian.luisdario.test 192.168.1.45`.
+
+![Captura de la comprobación con nslookup](./capturas/captura21.png)
+
+## 7. Cuestiones finales
+
+1. ¿Qué pasará si un cliente de una red diferente a la tuya intenta hacer uso de tu DNS de alguna
+   manera, le funcionará? ¿Por qué, en qué parte de la configuración puede verse?
+2. Por qué tenemos que permitir las consultas recursivas en la configuración?
+3. El servidor DNS que acabáis de montar, ¿es autoritativo?¿Por qué?
+4. ¿Dónde podemos encontrar la directiva $ORIGIN y para qué sirve?
+5. ¿Una zona es idéntico a un dominio?
+6. ¿Cuántos servidores raíz existen?
+7. ¿Qué es una consulta iterativa de referencia?
+8. En una resolución inversa, ¿a qué nombre se mapearía la dirección IP 172.16.34.56?
