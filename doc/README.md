@@ -2,15 +2,15 @@
 
 ## Sumario:
 
-\1. Configuraciones previas
-\2. Instalación del servidor
-\3. Configuración del servidor
-\4. Comprobaciones de las configuraciones, resoluciones y consultas
-\5. Comprobación usando _dig_
-\6. Comprobación usando _nslookup_
-\7. Cuestiones finales
+1. Configuraciones previas
+2. Instalación del servidor
+3. Configuración del servidor
+4. Comprobaciones de las configuraciones, resoluciones y consultas
+5. Comprobación usando _dig_
+6. Comprobación usando _nslookup_
+7. Cuestiones finales
 
-## \1. Configuraciones previas
+## 1. Configuraciones previas
 
 Vamos a empezar creando un directorio en Github.
 Nos vamos a nuestro perfil de Github y pinchamos en "Repositories" o "Repositorios".
@@ -21,7 +21,7 @@ Una vez ahí hacemos clic en "New" o "Nuevo" para crear un nuevo repositorio.
 
 ![Captura de mis repositorios](./capturas/captura2.png)
 
-Una vez aquí establecemos las preferencias de nuestro repositorio, en mi caso serán poner el nombre apropiado, hacerlo público y crearé el README.md.
+Una vez aquí establecemos las preferencias de nuestro repositorio, en mi caso serán poner el nombre apropiado, hacerlo privado y crearé el README.md.
 
 ![Captura de la creación de un repositorio](./capturas/captura3.png)
 
