@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.hostname = "servidorDNS"
 
-  config.vm.network "private_network", ip: "192.168.5.11"
+  config.vm.network "private_network", ip: "192.168.2.45"
 
   config.vm.network "forwarded_port", guest: 80, host: 8080
 
