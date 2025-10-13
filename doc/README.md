@@ -203,12 +203,26 @@ Vamos a usar `nslookup` ahora para comprobar que todo funciona como debería con
 
 ## 7. Cuestiones finales
 
-1. ¿Qué pasará si un cliente de una red diferente a la tuya intenta hacer uso de tu DNS de alguna
-   manera, le funcionará? ¿Por qué, en qué parte de la configuración puede verse?
-2. Por qué tenemos que permitir las consultas recursivas en la configuración?
-3. El servidor DNS que acabáis de montar, ¿es autoritativo?¿Por qué?
+1. ¿Qué pasará si un cliente de una red diferente a la tuya intenta hacer uso de tu DNS?
+   No le funcionará, porque en el fichero `/etc/bind/named.conf.options` definimos un ACL llamado confiables con la red `192.168.1.0/24` y luego permitimos recursión solo a esas direcciones. Esto significa que solo clientes dentro de esa red pueden realizar consultas recursivas. Otros clientes serán rechazados.
+
+2. ¿Por qué tenemos que permitir las consultas recursivas en la configuración?
+   Porque permiten que el servidor busque por los clientes cualquier dominio que no esté en sus zonas locales.
+
+3. El servidor DNS que acabáis de montar, ¿es autoritativo? ¿Por qué?
+   Sí, es autoritativo para las zonas que hemos configurado (`luisdario.test` y `2.168.192.in-addr.arpa`). En `named.conf.local` definimos las zonas como `type master` y proporcionamos los ficheros de zona. Esto indica que nuestro servidor tiene la autoridad para responder sobre esos dominios específicos.
+
 4. ¿Dónde podemos encontrar la directiva $ORIGIN y para qué sirve?
+   `$ORIGIN` se puede incluir al inicio de un fichero de zona DNS para definir el dominio base para los registros siguientes.
+
 5. ¿Una zona es idéntico a un dominio?
+   No, un dominio puede abarcar varias zonas.
+
 6. ¿Cuántos servidores raíz existen?
+   Existen 13 servidores raíz de DNS a nivel mundial, organizados en grupos con letras de la A a la M.
+
 7. ¿Qué es una consulta iterativa de referencia?
+   Es cuando un servidor DNS no sabe la respuesta final y en lugar de resolverla por completo, devuelve al cliente la dirección de otro servidor DNS más cercano al objetivo.
+
 8. En una resolución inversa, ¿a qué nombre se mapearía la dirección IP 172.16.34.56?
+   `56.34.16.172.in-addr.arpa`.
