@@ -7,6 +7,7 @@ sudo apt-get install -y bind9 bind9utils bind9-doc
 
 echo "Copiando ficheros de configuración..."
 sudo cp /vagrant/config/named /etc/default/named
+sudo cp /vagrant/config/named.conf.options /etc/bind/named.conf.options
 sudo cp /vagrant/config/named.conf.local /etc/bind/named.conf.local
 sudo cp /vagrant/config/luisdario.test.dns /var/lib/bind/luisdario.test.dns
 sudo cp /vagrant/config/luisdario.test.rev /var/lib/bind/luisdario.test.rev
