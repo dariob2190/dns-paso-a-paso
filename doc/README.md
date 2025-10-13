@@ -34,3 +34,7 @@ Una vez lo hayamos copiado, abrimos la carpeta. Vamos a editar el README.md y lo
 A continuación vamos a crear y editar el .gitignore y lo subimos también.
 
 ![Captura de la edición del .gitignore](./capturas/captura5.png)
+
+Vamos a crear el fichero Vagrantfile, para ello ejecutamos `vagrant init debian/bullseye64` (debemos instalar previamente vagrant) y esperamos a que nos cree el fichero.
+
+![Captura de la creación del fichero Vagrantfile](./capturas/captura6.png)
