@@ -15,7 +15,7 @@ sudo cp /vagrant/config/luisdario.test.rev /var/lib/bind/luisdario.test.rev
 echo "Verificando sintaxis de BIND..."
 sudo named-checkconf
 sudo named-checkzone luisdario.test /var/lib/bind/luisdario.test.dns
-sudo named-checkzone 2.168.192.in-addr.arpa /var/lib/bind/luisdario.test.rev
+sudo named-checkzone 56.168.192.in-addr.arpa /var/lib/bind/luisdario.test.rev
 
 echo "Reiniciando BIND9..."
 sudo systemctl restart bind9
